@@ -1,0 +1,20 @@
+name: 'test-create-policy'
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'releases/*'
+
+jobs:
+  create-policy:
+    runs-on: self-hosted
+    steps:
+      - name: Create Black Duck Policy
+        env:
+          NODE_EXTRA_CA_CERTS: ${{ secrets.LOCAL_CA_CERT_PATH }}
+        uses: blackducksoftware/create-policy-action@main
+        with:
+          blackduck-url: ${{ secrets.TEST_BLACKDUCK_URL }}
+          blackduck-api-token: ${{ secrets.TEST_BLACKDUCK_API_TOKEN }}
+

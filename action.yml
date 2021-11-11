@@ -2,10 +2,12 @@ name: 'Create Black Duck Policy Action'
 description: 'Create a policy within Black Duck'
 author: 'Synopsys, Inc.'
 inputs:
-  milliseconds: # change this
+  blackduck-url:
+    description: 'Url of Black Duck instance'
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+  blackduck-api-token:
+    description: 'API Token for Black Duck instance'
+    required: true
 runs:
   using: 'node12'
   main: 'dist/index.js'
