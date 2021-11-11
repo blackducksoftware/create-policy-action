@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
-  "version": "0.0.0",
+  "name": "create-policy-action",
+  "version": "0.0.1-SNAPSHOT",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "Create a Black Duck policy",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -15,17 +15,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/blackducksoftware/create-policy-action.git"
   },
   "keywords": [
     "actions",
+    "blackduck",
+    "policy",
     "node",
     "setup"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "Apache License 2.0",
   "dependencies": {
-    "@actions/core": "^1.6.0"
+    "@actions/core": "^1.6.0",
+    "@actions/tool-cache": "^1.7.1"
   },
   "devDependencies": {
     "@types/node": "^16.10.5",
