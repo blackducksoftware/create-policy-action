@@ -57,18 +57,21 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const blackduckUrl = core.getInput('blackduck-url');
         const blackduckApiToken = core.getInput('blackduck-api-token');
-        const blackduckUrlSize = blackduckUrl.length;
-        core.info(`Got Black Duck URL. Length: ${blackduckUrlSize}`);
-        const blackduckApiTokenSize = blackduckApiToken.length;
-        core.info(`Got Black Duck API Token. Length: ${blackduckApiTokenSize}`);
+        // Initiate Authentication Request
+        core.info('Initiating authentication request...');
         const authenticationClient = new HttpClient_1.HttpClient(applicationConstants_1.APPLICATION_NAME);
         const authorizationHeader = { "Authorization": `token ${blackduckApiToken}` };
         const authenticationResponse = yield authenticationClient.post(`${blackduckUrl}/api/tokens/authenticate`, '', authorizationHeader);
+        // Extract Bearer Token
+        core.info('Extracting authenticaiton token...');
         const responseBody = yield authenticationResponse.readBody();
         const responseBodyJson = JSON.parse(responseBody);
         const bearerToken = responseBodyJson.bearerToken;
+        // Create REST Client w/ Bearer Token
         const bearerTokenHandler = new handlers_1.BearerCredentialHandler(bearerToken, true);
         const blackduckRestClient = new RestClient_1.RestClient(applicationConstants_1.APPLICATION_NAME, blackduckUrl, [bearerTokenHandler]);
+        // Create Black Duck Policy
+        core.info('Attempting to create a Black Duck policy...');
         const blackduckPolicyCreator = new policyCreator_1.PolicyCreator(blackduckRestClient);
         blackduckPolicyCreator.createPolicy('GitHub Action Policy', 'A default policy created for GitHub actions')
             .then(response => {
@@ -113,7 +116,35 @@ class PolicyCreator {
     }
     createPolicy(name, description) {
         return __awaiter(this, void 0, void 0, function* () {
-            const requestBody = { name, description, enabled: true, overridable: true, severity: 'MAJOR', category: 'Component', expression: {} };
+            const requestBody = {
+                name, description,
+                enabled: true,
+                overridable: true,
+                severity: 'MAJOR',
+                category: 'Component',
+                expression: {
+                    operator: "AND",
+                    expressions: [
+                        {
+                            name: "CRITICAL_SEVERITY_VULN_COUNT",
+                            operation: "GT",
+                            parameters: {
+                                values: [
+                                    "0"
+                                ],
+                                data: [
+                                    {
+                                        data: 0
+                                    }
+                                ]
+                            },
+                            displayName: "Critical Severity Vulnerability Count",
+                            developerScanExpression: true,
+                            category: "COMPONENT"
+                        }
+                    ]
+                }
+            };
             const requestHeaders = { 'Content-Type': exports.POLICY_CONTENT_TYPE };
             const requestOptions = { additionalHeaders: requestHeaders };
             return this.blackDuckRestClient.create(exports.POLICY_ENDPOINT, requestBody, requestOptions);

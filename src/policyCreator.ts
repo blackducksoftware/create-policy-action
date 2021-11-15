@@ -22,7 +22,35 @@ export class PolicyCreator {
     }
 
     async createPolicy(name: string, description: string, ): Promise<IRestResponse<unknown>> {
-        const requestBody: IPolicyRule = {name, description, enabled: true, overridable: true, severity: 'MAJOR', category: 'Component', expression: {}}
+        const requestBody: IPolicyRule = {
+            name, description, 
+            enabled: true, 
+            overridable: true, 
+            severity: 'MAJOR', 
+            category: 'Component', 
+            expression: {
+                operator: "AND",
+                expressions: [
+                    {
+                        name: "CRITICAL_SEVERITY_VULN_COUNT",
+                        operation: "GT",
+                        parameters: {
+                            values: [
+                                "0"
+                            ],
+                            data: [
+                                {
+                                    data: 0
+                                }
+                            ]
+                        },
+                        displayName: "Critical Severity Vulnerability Count",
+                        developerScanExpression: true,
+                        category: "COMPONENT"
+                    }
+                ]
+            }
+        }
         const requestHeaders: IHeaders = {'Content-Type': POLICY_CONTENT_TYPE}
         const requestOptions: IRequestOptions = {additionalHeaders: requestHeaders}
         return this.blackDuckRestClient.create(POLICY_ENDPOINT, requestBody, requestOptions)

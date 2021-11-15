@@ -9,24 +9,25 @@ import { HttpClient } from 'typed-rest-client/HttpClient'
 async function run(): Promise<void> {
   const blackduckUrl = core.getInput('blackduck-url')
   const blackduckApiToken = core.getInput('blackduck-api-token')
-
-  const blackduckUrlSize = blackduckUrl.length
-  core.info(`Got Black Duck URL. Length: ${blackduckUrlSize}`)
-
-  const blackduckApiTokenSize = blackduckApiToken.length
-  core.info(`Got Black Duck API Token. Length: ${blackduckApiTokenSize}`)
   
+  // Initiate Authentication Request
+  core.info('Initiating authentication request...')
   const authenticationClient = new HttpClient(APPLICATION_NAME)
   const authorizationHeader: IHeaders = { "Authorization": `token ${blackduckApiToken}` }
   const authenticationResponse = await authenticationClient.post(`${blackduckUrl}/api/tokens/authenticate`, '', authorizationHeader)
 
+  // Extract Bearer Token
+  core.info('Extracting authenticaiton token...')
   const responseBody = await authenticationResponse.readBody()
   const responseBodyJson = JSON.parse(responseBody)
   const bearerToken : string = responseBodyJson.bearerToken
 
+  // Create REST Client w/ Bearer Token
   const bearerTokenHandler = new BearerCredentialHandler(bearerToken, true)
   const blackduckRestClient = new RestClient(APPLICATION_NAME, blackduckUrl, [bearerTokenHandler])
   
+  // Create Black Duck Policy
+  core.info('Attempting to create a Black Duck policy...')
   const blackduckPolicyCreator = new PolicyCreator(blackduckRestClient)
   blackduckPolicyCreator.createPolicy('GitHub Action Policy', 'A default policy created for GitHub actions')
     .then(response => {
