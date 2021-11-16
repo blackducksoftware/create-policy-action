@@ -73,11 +73,20 @@ function retrievePolicyEpressionParams() {
         maxLow: retrieveNumericInput('max-low', 25)
     };
 }
+function retrieveBearerTokenFromBlackduck(blackduckUrl, blackduckApiToken) {
+    return __awaiter(this, void 0, void 0, function* () {
+        core.info('Initiating authentication request...');
+        const authenticationClient = new HttpClient_1.HttpClient(application_constants_1.APPLICATION_NAME);
+        const authorizationHeader = { "Authorization": `token ${blackduckApiToken}` };
+        return authenticationClient.post(`${blackduckUrl}/api/tokens/authenticate`, '', authorizationHeader)
+            .then(authenticationResponse => authenticationResponse.readBody())
+            .then(responseBody => JSON.parse(responseBody))
+            .then(responseBodyJson => responseBodyJson.bearerToken);
+    });
+}
 function createPolicy(blackduckUrl, bearerToken, policyEpressionParams) {
-    // Create REST Client w/ Bearer Token
     const bearerTokenHandler = new handlers_1.BearerCredentialHandler(bearerToken, true);
     const blackduckRestClient = new RestClient_1.RestClient(application_constants_1.APPLICATION_NAME, blackduckUrl, [bearerTokenHandler]);
-    // Create Black Duck Policy
     core.info('Attempting to create a Black Duck policy...');
     const blackduckPolicyCreator = new policy_creator_1.PolicyCreator(blackduckRestClient);
     return blackduckPolicyCreator.createPolicy('GitHub Action Policy', 'A default policy created for GitHub actions', policyEpressionParams);
@@ -87,14 +96,7 @@ function run() {
         const blackduckUrl = core.getInput('blackduck-url');
         const blackduckApiToken = core.getInput('blackduck-api-token');
         const policyExpressionParams = retrievePolicyEpressionParams();
-        // Initiate Authentication Request
-        core.info('Initiating authentication request...');
-        const authenticationClient = new HttpClient_1.HttpClient(application_constants_1.APPLICATION_NAME);
-        const authorizationHeader = { "Authorization": `token ${blackduckApiToken}` };
-        authenticationClient.post(`${blackduckUrl}/api/tokens/authenticate`, '', authorizationHeader)
-            .then(authenticationResponse => authenticationResponse.readBody())
-            .then(responseBody => JSON.parse(responseBody))
-            .then(responseBodyJson => responseBodyJson.bearerToken)
+        retrieveBearerTokenFromBlackduck(blackduckUrl, blackduckApiToken)
             .then(bearerToken => createPolicy(blackduckUrl, bearerToken, policyExpressionParams))
             .then(response => {
             if (response.statusCode === 201) {
