@@ -2,8 +2,8 @@ import * as core from '@actions/core'
 import { BearerCredentialHandler } from 'typed-rest-client/handlers'
 import { IHeaders } from 'typed-rest-client/Interfaces'
 import { RestClient } from 'typed-rest-client/RestClient'
-import { APPLICATION_NAME } from './applicationConstants'
-import { PolicyCreator, IPolicyExpressionParams } from './policyCreator'
+import { APPLICATION_NAME } from './application-constants'
+import { PolicyCreator, IPolicyExpressionParams } from './policy-creator'
 import { HttpClient } from 'typed-rest-client/HttpClient'
 
 function retrieveNumericInput(inputKey: string, defaultValue: number): number { 
