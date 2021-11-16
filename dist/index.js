@@ -1,7 +1,7 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 4409:
+/***/ 9717:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -50,8 +50,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
 const handlers_1 = __nccwpck_require__(2188);
 const RestClient_1 = __nccwpck_require__(7405);
-const applicationConstants_1 = __nccwpck_require__(4409);
-const policyCreator_1 = __nccwpck_require__(1440);
+const application_constants_1 = __nccwpck_require__(9717);
+const policy_creator_1 = __nccwpck_require__(4531);
 const HttpClient_1 = __nccwpck_require__(5538);
 function retrieveNumericInput(inputKey, defaultValue) {
     const inputValue = core.getInput(inputKey, { required: false });
@@ -73,28 +73,29 @@ function retrievePolicyEpressionParams() {
         maxLow: retrieveNumericInput('max-low', 25)
     };
 }
+function createPolicy(blackduckUrl, bearerToken, policyEpressionParams) {
+    // Create REST Client w/ Bearer Token
+    const bearerTokenHandler = new handlers_1.BearerCredentialHandler(bearerToken, true);
+    const blackduckRestClient = new RestClient_1.RestClient(application_constants_1.APPLICATION_NAME, blackduckUrl, [bearerTokenHandler]);
+    // Create Black Duck Policy
+    core.info('Attempting to create a Black Duck policy...');
+    const blackduckPolicyCreator = new policy_creator_1.PolicyCreator(blackduckRestClient);
+    return blackduckPolicyCreator.createPolicy('GitHub Action Policy', 'A default policy created for GitHub actions', policyEpressionParams);
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const blackduckUrl = core.getInput('blackduck-url');
         const blackduckApiToken = core.getInput('blackduck-api-token');
-        const policyEpressionParams = retrievePolicyEpressionParams();
+        const policyExpressionParams = retrievePolicyEpressionParams();
         // Initiate Authentication Request
         core.info('Initiating authentication request...');
-        const authenticationClient = new HttpClient_1.HttpClient(applicationConstants_1.APPLICATION_NAME);
+        const authenticationClient = new HttpClient_1.HttpClient(application_constants_1.APPLICATION_NAME);
         const authorizationHeader = { "Authorization": `token ${blackduckApiToken}` };
-        const authenticationResponse = yield authenticationClient.post(`${blackduckUrl}/api/tokens/authenticate`, '', authorizationHeader);
-        // Extract Bearer Token
-        core.info('Extracting authenticaiton token...');
-        const responseBody = yield authenticationResponse.readBody();
-        const responseBodyJson = JSON.parse(responseBody);
-        const bearerToken = responseBodyJson.bearerToken;
-        // Create REST Client w/ Bearer Token
-        const bearerTokenHandler = new handlers_1.BearerCredentialHandler(bearerToken, true);
-        const blackduckRestClient = new RestClient_1.RestClient(applicationConstants_1.APPLICATION_NAME, blackduckUrl, [bearerTokenHandler]);
-        // Create Black Duck Policy
-        core.info('Attempting to create a Black Duck policy...');
-        const blackduckPolicyCreator = new policyCreator_1.PolicyCreator(blackduckRestClient);
-        blackduckPolicyCreator.createPolicy('GitHub Action Policy', 'A default policy created for GitHub actions', policyEpressionParams)
+        authenticationClient.post(`${blackduckUrl}/api/tokens/authenticate`, '', authorizationHeader)
+            .then(authenticationResponse => authenticationResponse.readBody())
+            .then(responseBody => JSON.parse(responseBody))
+            .then(responseBodyJson => responseBodyJson.bearerToken)
+            .then(bearerToken => createPolicy(blackduckUrl, bearerToken, policyExpressionParams))
             .then(response => {
             if (response.statusCode === 201) {
                 core.info('Successfully created a policy');
@@ -103,8 +104,8 @@ function run() {
                 core.warning('Policy creation status unknown');
             }
         })
-            .catch(error => {
-            core.setFailed(`Failed to create policy: ${error}`);
+            .catch(err => {
+            core.setFailed(`Failed to create policy: ${err}`);
         });
     });
 }
@@ -113,7 +114,7 @@ run();
 
 /***/ }),
 
-/***/ 1440:
+/***/ 4531:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";

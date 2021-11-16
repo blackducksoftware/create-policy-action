@@ -28,32 +28,32 @@ function retrieveNumericInput(inputKey: string, defaultValue: number): number {
    }
  }
 
-async function run(): Promise<void> {
-  const blackduckUrl = core.getInput('blackduck-url')
-  const blackduckApiToken = core.getInput('blackduck-api-token')
-
-  const policyEpressionParams: IPolicyExpressionParams = retrievePolicyEpressionParams()
-  
-  // Initiate Authentication Request
-  core.info('Initiating authentication request...')
-  const authenticationClient = new HttpClient(APPLICATION_NAME)
-  const authorizationHeader: IHeaders = { "Authorization": `token ${blackduckApiToken}` }
-  const authenticationResponse = await authenticationClient.post(`${blackduckUrl}/api/tokens/authenticate`, '', authorizationHeader)
-
-  // Extract Bearer Token
-  core.info('Extracting authenticaiton token...')
-  const responseBody = await authenticationResponse.readBody()
-  const responseBodyJson = JSON.parse(responseBody)
-  const bearerToken : string = responseBodyJson.bearerToken
-
-  // Create REST Client w/ Bearer Token
+ function createPolicy(blackduckUrl: string, bearerToken: string, policyEpressionParams: IPolicyExpressionParams) {
+   // Create REST Client w/ Bearer Token
   const bearerTokenHandler = new BearerCredentialHandler(bearerToken, true)
   const blackduckRestClient = new RestClient(APPLICATION_NAME, blackduckUrl, [bearerTokenHandler])
   
   // Create Black Duck Policy
   core.info('Attempting to create a Black Duck policy...')
   const blackduckPolicyCreator = new PolicyCreator(blackduckRestClient)
-  blackduckPolicyCreator.createPolicy('GitHub Action Policy', 'A default policy created for GitHub actions', policyEpressionParams)
+  return blackduckPolicyCreator.createPolicy('GitHub Action Policy', 'A default policy created for GitHub actions', policyEpressionParams)
+ }
+
+async function run(): Promise<void> {
+  const blackduckUrl = core.getInput('blackduck-url')
+  const blackduckApiToken = core.getInput('blackduck-api-token')
+
+  const policyExpressionParams: IPolicyExpressionParams = retrievePolicyEpressionParams()
+  
+  // Initiate Authentication Request
+  core.info('Initiating authentication request...')
+  const authenticationClient = new HttpClient(APPLICATION_NAME)
+  const authorizationHeader: IHeaders = { "Authorization": `token ${blackduckApiToken}` }
+  authenticationClient.post(`${blackduckUrl}/api/tokens/authenticate`, '', authorizationHeader)
+    .then(authenticationResponse => authenticationResponse.readBody())
+    .then(responseBody => JSON.parse(responseBody))
+    .then(responseBodyJson => responseBodyJson.bearerToken)
+    .then(bearerToken => createPolicy(blackduckUrl, bearerToken, policyExpressionParams))
     .then(response => {
       if (response.statusCode === 201) {
         core.info('Successfully created a policy')
@@ -61,8 +61,8 @@ async function run(): Promise<void> {
         core.warning('Policy creation status unknown')
       }
     })
-    .catch(error => {
-      core.setFailed(`Failed to create policy: ${error}`)
+    .catch(err => {
+      core.setFailed(`Failed to create policy: ${err}`)
     })
 }
 
