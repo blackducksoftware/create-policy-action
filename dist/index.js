@@ -75,13 +75,16 @@ function retrievePolicyEpressionParams() {
 }
 function retrieveBearerTokenFromBlackduck(blackduckUrl, blackduckApiToken) {
     return __awaiter(this, void 0, void 0, function* () {
-        core.info('Initiating authentication request...');
+        core.info('Initiating authentication request to Black Duck...');
         const authenticationClient = new HttpClient_1.HttpClient(application_constants_1.APPLICATION_NAME);
         const authorizationHeader = { "Authorization": `token ${blackduckApiToken}` };
         return authenticationClient.post(`${blackduckUrl}/api/tokens/authenticate`, '', authorizationHeader)
             .then(authenticationResponse => authenticationResponse.readBody())
             .then(responseBody => JSON.parse(responseBody))
-            .then(responseBodyJson => responseBodyJson.bearerToken);
+            .then(responseBodyJson => {
+            core.info('Successfully authenticated with Black Duck');
+            return responseBodyJson.bearerToken;
+        });
     });
 }
 function createPolicy(blackduckUrl, bearerToken, policyEpressionParams) {
@@ -100,7 +103,7 @@ function run() {
             .then(bearerToken => createPolicy(blackduckUrl, bearerToken, policyExpressionParams))
             .then(response => {
             if (response.statusCode === 201) {
-                core.info('Successfully created a policy');
+                core.info('Successfully created a Black Duck policy');
             }
             else {
                 core.warning('Policy creation status unknown');

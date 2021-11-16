@@ -29,14 +29,17 @@ function retrievePolicyEpressionParams(): IPolicyExpressionParams {
 }
 
 async function retrieveBearerTokenFromBlackduck(blackduckUrl: string, blackduckApiToken: string) {
-  core.info('Initiating authentication request...')
+  core.info('Initiating authentication request to Black Duck...')
   const authenticationClient = new HttpClient(APPLICATION_NAME)
   const authorizationHeader: IHeaders = { "Authorization": `token ${blackduckApiToken}` }
 
   return authenticationClient.post(`${blackduckUrl}/api/tokens/authenticate`, '', authorizationHeader)
     .then(authenticationResponse => authenticationResponse.readBody())
     .then(responseBody => JSON.parse(responseBody))
-    .then(responseBodyJson => responseBodyJson.bearerToken)
+    .then(responseBodyJson => {
+      core.info('Successfully authenticated with Black Duck')
+      return responseBodyJson.bearerToken
+    })
 }
 
 function createPolicy(blackduckUrl: string, bearerToken: string, policyEpressionParams: IPolicyExpressionParams) {
@@ -58,7 +61,7 @@ async function run(): Promise<void> {
     .then(bearerToken => createPolicy(blackduckUrl, bearerToken, policyExpressionParams))
     .then(response => {
       if (response.statusCode === 201) {
-        core.info('Successfully created a policy')
+        core.info('Successfully created a Black Duck policy')
       } else {
         core.warning('Policy creation status unknown')
       }
