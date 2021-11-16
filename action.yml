@@ -8,6 +8,18 @@ inputs:
   blackduck-api-token:
     description: 'API Token for Black Duck instance'
     required: true
+  max-critical:
+    description: 'The maximum allowed number of critical vulnerabilities'
+    required: false
+  max-high:
+    description: 'The maximum allowed number of high vulnerabilities'
+    required: false
+  max-medium:
+    description: 'The maximum allowed number of medium vulnerabilities'
+    required: false
+  max-low:
+    description: 'The maximum allowed number of low vulnerabilities'
+    required: false
 runs:
   using: 'node12'
   main: 'dist/index.js'
