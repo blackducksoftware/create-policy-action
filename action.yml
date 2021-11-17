@@ -8,6 +8,10 @@ inputs:
   blackduck-api-token:
     description: 'API Token for Black Duck instance'
     required: true
+  no-fail-if-policy-exists:
+    description: 'If true, the action will not fail if a policy with the same name already exists'
+    required: false
+    default: false
   max-critical:
     description: 'The maximum allowed number of critical vulnerabilities'
     required: false

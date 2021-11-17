@@ -7,6 +7,7 @@ import { retrievePolicyEpressionParams } from './input-retriever'
 import { retrieveBearerTokenFromBlackduck } from './blackduck-authenticator'
 
 const ERR_CODE_POLICY_EXISTS = 'policy.rule.constraint_violation.uniqueidx_policy_rule_name'
+const INPUT_NO_FAIL_FLAG = 'no-fail-if-policy-exists'
 
 function connectAndCreatePolicy(blackduckUrl: string, bearerToken: string, policyEpressionParams: IPolicyExpressionParams) {
   const bearerTokenHandler = new BearerCredentialHandler(bearerToken, true)
@@ -20,6 +21,7 @@ function connectAndCreatePolicy(blackduckUrl: string, bearerToken: string, polic
 async function run(): Promise<void> {
   const blackduckUrl = core.getInput('blackduck-url')
   const blackduckApiToken = core.getInput('blackduck-api-token')
+  const noFailIfPolicyExists = core.getBooleanInput(INPUT_NO_FAIL_FLAG) || false
 
   const policyExpressionParams: IPolicyExpressionParams = retrievePolicyEpressionParams()
 
@@ -35,16 +37,11 @@ async function run(): Promise<void> {
     .catch(err => {
       if (err.message && (err.message as string).startsWith('{')) {
         const errorJson = JSON.parse(err.message)
-        core.info(`Error JSON: ${err.message}`)
-        if (errorJson.errorCode && errorJson.errorCode.includes(ERR_CODE_POLICY_EXISTS)) {
-          core.info('A policy rule with the specified name already exists')
+        if (noFailIfPolicyExists && errorJson.errorCode && errorJson.errorCode.includes(ERR_CODE_POLICY_EXISTS)) {
+          core.info(`Policy already exists, but '${INPUT_NO_FAIL_FLAG}' is set.`)
+          return
         }
-
-        if (errorJson.errors) {
-          for (const individualError in errorJson.errors) {
-            core.error((individualError as any).errorMessage)
-          }
-        }
+        core.warning(errorJson.errorMessage)
       }
 
       core.setFailed('Failed to create policy')
