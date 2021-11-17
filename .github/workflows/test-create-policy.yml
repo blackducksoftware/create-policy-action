@@ -17,4 +17,5 @@ jobs:
         with:
           blackduck-url: ${{ secrets.TEST_BLACKDUCK_URL }}
           blackduck-api-token: ${{ secrets.TEST_BLACKDUCK_API_TOKEN }}
+          no-fail-if-policy-exists: true
 
