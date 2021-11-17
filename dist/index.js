@@ -145,6 +145,7 @@ const application_constants_1 = __nccwpck_require__(9717);
 const policy_creator_1 = __nccwpck_require__(4531);
 const input_retriever_1 = __nccwpck_require__(2061);
 const blackduck_authenticator_1 = __nccwpck_require__(2104);
+const ERR_CODE_POLICY_EXISTS = 'policy.rule.constraint_violation.uniqueidx_policy_rule_name';
 function connectAndCreatePolicy(blackduckUrl, bearerToken, policyEpressionParams) {
     const bearerTokenHandler = new handlers_1.BearerCredentialHandler(bearerToken, true);
     const blackduckRestClient = new RestClient_1.RestClient(application_constants_1.APPLICATION_NAME, blackduckUrl, [bearerTokenHandler]);
@@ -168,7 +169,19 @@ function run() {
             }
         })
             .catch(err => {
-            core.setFailed(`Failed to create policy: ${err}`);
+            if (err.message && err.message.startsWith('{')) {
+                const errorJson = JSON.parse(err.message);
+                core.info(`Error JSON: ${err.message}`);
+                if (errorJson.errorCode && errorJson.errorCode.includes(ERR_CODE_POLICY_EXISTS)) {
+                    core.info('A policy rule with the specified name already exists');
+                }
+                if (errorJson.errors) {
+                    for (const individualError in errorJson.errors) {
+                        core.error(individualError.errorMessage);
+                    }
+                }
+            }
+            core.setFailed('Failed to create policy');
         });
     });
 }

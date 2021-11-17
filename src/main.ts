@@ -6,6 +6,8 @@ import { PolicyCreator, IPolicyExpressionParams } from './policy-creator'
 import { retrievePolicyEpressionParams } from './input-retriever'
 import { retrieveBearerTokenFromBlackduck } from './blackduck-authenticator'
 
+const ERR_CODE_POLICY_EXISTS = 'policy.rule.constraint_violation.uniqueidx_policy_rule_name'
+
 function connectAndCreatePolicy(blackduckUrl: string, bearerToken: string, policyEpressionParams: IPolicyExpressionParams) {
   const bearerTokenHandler = new BearerCredentialHandler(bearerToken, true)
   const blackduckRestClient = new RestClient(APPLICATION_NAME, blackduckUrl, [bearerTokenHandler])
@@ -31,7 +33,21 @@ async function run(): Promise<void> {
       }
     })
     .catch(err => {
-      core.setFailed(`Failed to create policy: ${err}`)
+      if (err.message && (err.message as string).startsWith('{')) {
+        const errorJson = JSON.parse(err.message)
+        core.info(`Error JSON: ${err.message}`)
+        if (errorJson.errorCode && errorJson.errorCode.includes(ERR_CODE_POLICY_EXISTS)) {
+          core.info('A policy rule with the specified name already exists')
+        }
+
+        if (errorJson.errors) {
+          for (const individualError in errorJson.errors) {
+            core.error((individualError as any).errorMessage)
+          }
+        }
+      }
+
+      core.setFailed('Failed to create policy')
     })
 }
 
