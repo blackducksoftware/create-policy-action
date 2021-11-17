@@ -9,14 +9,13 @@ A GitHub action that will create a policy within a specified Black Duck instance
 - blackduck-url: string
 - blackduck-api-token: string
 ## Optional
+- no-fail-if-policy-exists: boolean
+- policy-name: string
+- policy-description: string
 - max-critical: number
-  - default: 0
 - max-high: number
-  - default: 0
 - max-medium: number
-  - default: 10
 - max-low: number
-  - default: 25
 
 # Troubleshooting
 ## Certificates

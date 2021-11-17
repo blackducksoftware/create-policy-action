@@ -9,24 +9,27 @@ import { retrieveBearerTokenFromBlackduck } from './blackduck-authenticator'
 const ERR_CODE_POLICY_EXISTS = 'policy.rule.constraint_violation.uniqueidx_policy_rule_name'
 const INPUT_NO_FAIL_FLAG = 'no-fail-if-policy-exists'
 
-function connectAndCreatePolicy(blackduckUrl: string, bearerToken: string, policyEpressionParams: IPolicyExpressionParams) {
+function connectAndCreatePolicy(blackduckUrl: string, bearerToken: string, policyName: string, policyDescription: string, policyEpressionParams: IPolicyExpressionParams) {
   const bearerTokenHandler = new BearerCredentialHandler(bearerToken, true)
   const blackduckRestClient = new RestClient(APPLICATION_NAME, blackduckUrl, [bearerTokenHandler])
 
   core.info('Attempting to create a Black Duck policy...')
   const blackduckPolicyCreator = new PolicyCreator(blackduckRestClient)
-  return blackduckPolicyCreator.createPolicy('GitHub Action Policy', 'A default policy created for GitHub actions', policyEpressionParams)
+  return blackduckPolicyCreator.createPolicy(policyName, policyDescription, policyEpressionParams)
 }
 
 async function run(): Promise<void> {
   const blackduckUrl = core.getInput('blackduck-url')
   const blackduckApiToken = core.getInput('blackduck-api-token')
+
   const noFailIfPolicyExists = core.getBooleanInput(INPUT_NO_FAIL_FLAG) || false
 
+  const policyName = core.getInput('policy-name')
+  const policyDescription = core.getInput('policy-description')
   const policyExpressionParams: IPolicyExpressionParams = retrievePolicyEpressionParams()
 
   retrieveBearerTokenFromBlackduck(blackduckUrl, blackduckApiToken)
-    .then(bearerToken => connectAndCreatePolicy(blackduckUrl, bearerToken, policyExpressionParams))
+    .then(bearerToken => connectAndCreatePolicy(blackduckUrl, bearerToken, policyName, policyDescription, policyExpressionParams))
     .then(response => {
       if (response.statusCode === 201) {
         core.info('Successfully created a Black Duck policy')

@@ -12,18 +12,30 @@ inputs:
     description: 'If true, the action will not fail if a policy with the same name already exists'
     required: false
     default: false
+  policy-name:
+    description: 'The name of the policy rule to create'
+    required: false
+    default: 'GitHub Action Policy'
+  policy-description:
+    description: 'The description of the policy rule to create'
+    required: false
+    default: 'A default policy created for GitHub actions'
   max-critical:
     description: 'The maximum allowed number of critical vulnerabilities'
     required: false
+    default: 0
   max-high:
     description: 'The maximum allowed number of high vulnerabilities'
     required: false
+    default: 0
   max-medium:
     description: 'The maximum allowed number of medium vulnerabilities'
     required: false
+    default: 10
   max-low:
     description: 'The maximum allowed number of low vulnerabilities'
     required: false
+    default: 25
 runs:
   using: 'node12'
   main: 'dist/index.js'

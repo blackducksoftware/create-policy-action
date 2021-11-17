@@ -78,10 +78,10 @@ exports.retrieveBearerTokenFromBlackduck = retrieveBearerTokenFromBlackduck;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.retrievePolicyEpressionParams = exports.retrieveNumericInput = void 0;
 const core_1 = __nccwpck_require__(2186);
-function retrieveNumericInput(inputKey, defaultValue, required = false) {
+function retrieveNumericInput(inputKey, required = false) {
     const inputValue = (0, core_1.getInput)(inputKey, { required });
     if (!inputValue) {
-        return defaultValue;
+        throw new Error(`Expected a value for ${inputKey}, but none was set`);
     }
     try {
         return parseInt(inputValue);
@@ -93,10 +93,10 @@ function retrieveNumericInput(inputKey, defaultValue, required = false) {
 exports.retrieveNumericInput = retrieveNumericInput;
 function retrievePolicyEpressionParams() {
     return {
-        maxCritical: retrieveNumericInput('max-critical', 0),
-        maxHigh: retrieveNumericInput('max-high', 0),
-        maxMedium: retrieveNumericInput('max-medium', 10),
-        maxLow: retrieveNumericInput('max-low', 25)
+        maxCritical: retrieveNumericInput('max-critical'),
+        maxHigh: retrieveNumericInput('max-high'),
+        maxMedium: retrieveNumericInput('max-medium'),
+        maxLow: retrieveNumericInput('max-low')
     };
 }
 exports.retrievePolicyEpressionParams = retrievePolicyEpressionParams;
@@ -147,21 +147,23 @@ const input_retriever_1 = __nccwpck_require__(2061);
 const blackduck_authenticator_1 = __nccwpck_require__(2104);
 const ERR_CODE_POLICY_EXISTS = 'policy.rule.constraint_violation.uniqueidx_policy_rule_name';
 const INPUT_NO_FAIL_FLAG = 'no-fail-if-policy-exists';
-function connectAndCreatePolicy(blackduckUrl, bearerToken, policyEpressionParams) {
+function connectAndCreatePolicy(blackduckUrl, bearerToken, policyName, policyDescription, policyEpressionParams) {
     const bearerTokenHandler = new handlers_1.BearerCredentialHandler(bearerToken, true);
     const blackduckRestClient = new RestClient_1.RestClient(application_constants_1.APPLICATION_NAME, blackduckUrl, [bearerTokenHandler]);
     core.info('Attempting to create a Black Duck policy...');
     const blackduckPolicyCreator = new policy_creator_1.PolicyCreator(blackduckRestClient);
-    return blackduckPolicyCreator.createPolicy('GitHub Action Policy', 'A default policy created for GitHub actions', policyEpressionParams);
+    return blackduckPolicyCreator.createPolicy(policyName, policyDescription, policyEpressionParams);
 }
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         const blackduckUrl = core.getInput('blackduck-url');
         const blackduckApiToken = core.getInput('blackduck-api-token');
         const noFailIfPolicyExists = core.getBooleanInput(INPUT_NO_FAIL_FLAG) || false;
+        const policyName = core.getInput('policy-name');
+        const policyDescription = core.getInput('policy-description');
         const policyExpressionParams = (0, input_retriever_1.retrievePolicyEpressionParams)();
         (0, blackduck_authenticator_1.retrieveBearerTokenFromBlackduck)(blackduckUrl, blackduckApiToken)
-            .then(bearerToken => connectAndCreatePolicy(blackduckUrl, bearerToken, policyExpressionParams))
+            .then(bearerToken => connectAndCreatePolicy(blackduckUrl, bearerToken, policyName, policyDescription, policyExpressionParams))
             .then(response => {
             if (response.statusCode === 201) {
                 core.info('Successfully created a Black Duck policy');
