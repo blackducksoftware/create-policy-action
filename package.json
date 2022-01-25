@@ -1,6 +1,6 @@
 {
   "name": "create-policy-action",
-  "version": "0.0.1",
+  "version": "0.0.2-SNAPSHOT",
   "private": true,
   "description": "Create a Black Duck policy",
   "main": "lib/main.js",
