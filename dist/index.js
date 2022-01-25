@@ -303,7 +303,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.issue = exports.issueCommand = void 0;
-const os = __importStar(__nccwpck_require__(2087));
+const os = __importStar(__nccwpck_require__(2037));
 const utils_1 = __nccwpck_require__(5278);
 /**
  * Commands
@@ -414,8 +414,8 @@ exports.getIDToken = exports.getState = exports.saveState = exports.group = expo
 const command_1 = __nccwpck_require__(7351);
 const file_command_1 = __nccwpck_require__(717);
 const utils_1 = __nccwpck_require__(5278);
-const os = __importStar(__nccwpck_require__(2087));
-const path = __importStar(__nccwpck_require__(5622));
+const os = __importStar(__nccwpck_require__(2037));
+const path = __importStar(__nccwpck_require__(1017));
 const oidc_utils_1 = __nccwpck_require__(8041);
 /**
  * The code to exit an action
@@ -724,8 +724,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.issueCommand = void 0;
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const fs = __importStar(__nccwpck_require__(5747));
-const os = __importStar(__nccwpck_require__(2087));
+const fs = __importStar(__nccwpck_require__(7147));
+const os = __importStar(__nccwpck_require__(2037));
 const utils_1 = __nccwpck_require__(5278);
 function issueCommand(command, message) {
     const filePath = process.env[`GITHUB_${command}`];
@@ -947,8 +947,8 @@ exports.PersonalAccessTokenCredentialHandler = PersonalAccessTokenCredentialHand
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const http = __nccwpck_require__(8605);
-const https = __nccwpck_require__(7211);
+const http = __nccwpck_require__(3685);
+const https = __nccwpck_require__(5687);
 const pm = __nccwpck_require__(6443);
 let tunnel;
 var HttpCodes;
@@ -2159,7 +2159,7 @@ var gPO = (typeof Reflect === 'function' ? Reflect.getPrototypeOf : Object.getPr
         : null
 );
 
-var inspectCustom = __nccwpck_require__(7265).custom;
+var inspectCustom = (__nccwpck_require__(7265).custom);
 var inspectSymbol = inspectCustom && isSymbol(inspectCustom) ? inspectCustom : null;
 var toStringTag = typeof Symbol === 'function' && typeof Symbol.toStringTag !== 'undefined' ? Symbol.toStringTag : null;
 
@@ -2602,7 +2602,7 @@ function arrObjKeys(obj, inspect) {
 /***/ 7265:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-module.exports = __nccwpck_require__(1669).inspect;
+module.exports = __nccwpck_require__(3837).inspect;
 
 
 /***/ }),
@@ -3631,13 +3631,13 @@ module.exports = __nccwpck_require__(4219);
 "use strict";
 
 
-var net = __nccwpck_require__(1631);
-var tls = __nccwpck_require__(4016);
-var http = __nccwpck_require__(8605);
-var https = __nccwpck_require__(7211);
-var events = __nccwpck_require__(8614);
-var assert = __nccwpck_require__(2357);
-var util = __nccwpck_require__(1669);
+var net = __nccwpck_require__(1808);
+var tls = __nccwpck_require__(4404);
+var http = __nccwpck_require__(3685);
+var https = __nccwpck_require__(5687);
+var events = __nccwpck_require__(2361);
+var assert = __nccwpck_require__(9491);
+var util = __nccwpck_require__(3837);
 
 
 exports.httpOverHttp = httpOverHttp;
@@ -3913,9 +3913,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const url = __nccwpck_require__(8835);
-const http = __nccwpck_require__(8605);
-const https = __nccwpck_require__(7211);
+const url = __nccwpck_require__(7310);
+const http = __nccwpck_require__(3685);
+const https = __nccwpck_require__(5687);
 const util = __nccwpck_require__(9470);
 let fs;
 let tunnel;
@@ -4033,7 +4033,7 @@ class HttpClient {
             this._certConfig = requestOptions.cert;
             if (this._certConfig) {
                 // If using cert, need fs
-                fs = __nccwpck_require__(5747);
+                fs = __nccwpck_require__(7147);
                 // cache the cert content into memory, so we don't have to read it from disk every time
                 if (this._certConfig.caFile && fs.existsSync(this._certConfig.caFile)) {
                     this._ca = fs.readFileSync(this._certConfig.caFile, 'utf8');
@@ -4648,9 +4648,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const qs = __nccwpck_require__(2760);
-const url = __nccwpck_require__(8835);
-const path = __nccwpck_require__(5622);
-const zlib = __nccwpck_require__(8761);
+const url = __nccwpck_require__(7310);
+const path = __nccwpck_require__(1017);
+const zlib = __nccwpck_require__(9796);
 /**
  * creates an url from a request url and optional base url (http://server:8080)
  * @param {string} resource - a fully qualified url or relative path
@@ -4883,9 +4883,9 @@ exports.BearerCredentialHandler = BearerCredentialHandler;
 // Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const http = __nccwpck_require__(8605);
-const https = __nccwpck_require__(7211);
-const _ = __nccwpck_require__(3571);
+const http = __nccwpck_require__(3685);
+const https = __nccwpck_require__(5687);
+const _ = __nccwpck_require__(5067);
 const ntlm = __nccwpck_require__(2673);
 class NtlmCredentialHandler {
     constructor(username, password, workstation, domain) {
@@ -5061,7 +5061,7 @@ exports.PersonalAccessTokenCredentialHandler = PersonalAccessTokenCredentialHand
 /***/ 2352:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var crypto = __nccwpck_require__(6417);
+var crypto = __nccwpck_require__(6113);
 
 function zeroextend(str, len)
 {
@@ -5130,10 +5130,10 @@ module.exports.bintohex = bintohex;
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 var log = console.log;
-var crypto = __nccwpck_require__(6417);
+var crypto = __nccwpck_require__(6113);
 var $ = __nccwpck_require__(2352);
-var lmhashbuf = __nccwpck_require__(8657).lmhashbuf;
-var nthashbuf = __nccwpck_require__(8657).nthashbuf;
+var lmhashbuf = (__nccwpck_require__(8657).lmhashbuf);
+var nthashbuf = (__nccwpck_require__(8657).nthashbuf);
 
 
 function encodeType1(hostname, ntdomain) {
@@ -5342,7 +5342,7 @@ exports.challengeHeader = function (hostname, domain) {
 
 exports.responseHeader = function (res, url, domain, username, password) {
   var serverNonce = new Buffer((res.headers['www-authenticate'].match(/^NTLM\s+(.+?)(,|\s+|$)/) || [])[1], 'base64');
-  var hostname = __nccwpck_require__(8835).parse(url).hostname;
+  var hostname = (__nccwpck_require__(7310).parse)(url).hostname;
   return 'NTLM ' + exports.encodeType3(username, hostname, domain, exports.decodeType2(serverNonce), password).toString('base64')
 };
 
@@ -5356,7 +5356,7 @@ exports.smbhash = __nccwpck_require__(8657);
 /***/ 8657:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var crypto = __nccwpck_require__(6417);
+var crypto = __nccwpck_require__(6113);
 var $ = __nccwpck_require__(2352);
 
 /*
@@ -5424,7 +5424,111 @@ module.exports.lmhash = lmhash;
 
 /***/ }),
 
-/***/ 1641:
+/***/ 9491:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("assert");
+
+/***/ }),
+
+/***/ 6113:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("crypto");
+
+/***/ }),
+
+/***/ 2361:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("events");
+
+/***/ }),
+
+/***/ 7147:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("fs");
+
+/***/ }),
+
+/***/ 3685:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("http");
+
+/***/ }),
+
+/***/ 5687:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("https");
+
+/***/ }),
+
+/***/ 1808:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("net");
+
+/***/ }),
+
+/***/ 2037:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("os");
+
+/***/ }),
+
+/***/ 1017:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("path");
+
+/***/ }),
+
+/***/ 4404:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("tls");
+
+/***/ }),
+
+/***/ 7310:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("url");
+
+/***/ }),
+
+/***/ 3837:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("util");
+
+/***/ }),
+
+/***/ 9796:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("zlib");
+
+/***/ }),
+
+/***/ 6717:
 /***/ ((__unused_webpack_module, exports) => {
 
 //     Underscore.js 1.13.1
@@ -7589,7 +7693,7 @@ exports.zip = zip;
 
 /***/ }),
 
-/***/ 3571:
+/***/ 5067:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 //     Underscore.js 1.13.1
@@ -7597,117 +7701,13 @@ exports.zip = zip;
 //     (c) 2009-2021 Jeremy Ashkenas, Julian Gonggrijp, and DocumentCloud and Investigative Reporters & Editors
 //     Underscore may be freely distributed under the MIT license.
 
-var underscoreNodeF = __nccwpck_require__(1641);
+var underscoreNodeF = __nccwpck_require__(6717);
 
 
 
 module.exports = underscoreNodeF._;
 //# sourceMappingURL=underscore-node.cjs.map
 
-
-/***/ }),
-
-/***/ 2357:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("assert");
-
-/***/ }),
-
-/***/ 6417:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("crypto");
-
-/***/ }),
-
-/***/ 8614:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("events");
-
-/***/ }),
-
-/***/ 5747:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("fs");
-
-/***/ }),
-
-/***/ 8605:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("http");
-
-/***/ }),
-
-/***/ 7211:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("https");
-
-/***/ }),
-
-/***/ 1631:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("net");
-
-/***/ }),
-
-/***/ 2087:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("os");
-
-/***/ }),
-
-/***/ 5622:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("path");
-
-/***/ }),
-
-/***/ 4016:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("tls");
-
-/***/ }),
-
-/***/ 8835:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("url");
-
-/***/ }),
-
-/***/ 1669:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("util");
-
-/***/ }),
-
-/***/ 8761:
-/***/ ((module) => {
-
-"use strict";
-module.exports = require("zlib");
 
 /***/ })
 
