@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { BearerCredentialHandler } from 'typed-rest-client/handlers'
+import { BearerCredentialHandler } from 'typed-rest-client/Handlers'
 import { RestClient } from 'typed-rest-client/RestClient'
 import { APPLICATION_NAME } from './application-constants'
 import { PolicyCreator, IPolicyExpressionParams } from './policy-creator'

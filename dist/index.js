@@ -139,7 +139,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
-const handlers_1 = __nccwpck_require__(2188);
+const Handlers_1 = __nccwpck_require__(4442);
 const RestClient_1 = __nccwpck_require__(7405);
 const application_constants_1 = __nccwpck_require__(9717);
 const policy_creator_1 = __nccwpck_require__(4531);
@@ -148,7 +148,7 @@ const blackduck_authenticator_1 = __nccwpck_require__(2104);
 const ERR_CODE_POLICY_EXISTS = 'policy.rule.constraint_violation.uniqueidx_policy_rule_name';
 const INPUT_NO_FAIL_FLAG = 'no-fail-if-policy-exists';
 function connectAndCreatePolicy(blackduckUrl, bearerToken, policyName, policyDescription, policyEpressionParams) {
-    const bearerTokenHandler = new handlers_1.BearerCredentialHandler(bearerToken, true);
+    const bearerTokenHandler = new Handlers_1.BearerCredentialHandler(bearerToken, true);
     const blackduckRestClient = new RestClient_1.RestClient(application_constants_1.APPLICATION_NAME, blackduckUrl, [bearerTokenHandler]);
     core.info('Attempting to create a Black Duck policy...');
     const blackduckPolicyCreator = new policy_creator_1.PolicyCreator(blackduckRestClient);
@@ -3897,6 +3897,24 @@ exports.debug = debug; // for test
 
 /***/ }),
 
+/***/ 4442:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+var basiccreds_1 = __nccwpck_require__(7954);
+exports.BasicCredentialHandler = basiccreds_1.BasicCredentialHandler;
+var bearertoken_1 = __nccwpck_require__(7431);
+exports.BearerCredentialHandler = bearertoken_1.BearerCredentialHandler;
+var ntlm_1 = __nccwpck_require__(4157);
+exports.NtlmCredentialHandler = ntlm_1.NtlmCredentialHandler;
+var personalaccesstoken_1 = __nccwpck_require__(7799);
+exports.PersonalAccessTokenCredentialHandler = personalaccesstoken_1.PersonalAccessTokenCredentialHandler;
+
+
+/***/ }),
+
 /***/ 5538:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -4776,24 +4794,6 @@ function obtainContentCharset(response) {
     return (matches && matches[1] && nodeSupportedEncodings.indexOf(matches[1]) != -1) ? matches[1] : 'utf-8';
 }
 exports.obtainContentCharset = obtainContentCharset;
-
-
-/***/ }),
-
-/***/ 2188:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-var basiccreds_1 = __nccwpck_require__(7954);
-exports.BasicCredentialHandler = basiccreds_1.BasicCredentialHandler;
-var bearertoken_1 = __nccwpck_require__(7431);
-exports.BearerCredentialHandler = bearertoken_1.BearerCredentialHandler;
-var ntlm_1 = __nccwpck_require__(4157);
-exports.NtlmCredentialHandler = ntlm_1.NtlmCredentialHandler;
-var personalaccesstoken_1 = __nccwpck_require__(7799);
-exports.PersonalAccessTokenCredentialHandler = personalaccesstoken_1.PersonalAccessTokenCredentialHandler;
 
 
 /***/ }),
